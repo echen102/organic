@@ -25,6 +25,7 @@ def guess_to_string(current_guess):
     return string
 
 def new_guess(already_guessed):
+    #get a guess from the user and ensure that it is only one character and has not already been guessed
     guess_char = input("Guess a letter: ")
     while len(guess_char) != 1 or guess_char in already_guessed:
         if guess_char in already_guessed:
@@ -48,9 +49,12 @@ def check_guess(guess_char, guess_word, secret_word):
     return (is_found, times_found, updated_guess_word)
 
 def intro():
+    #get game parameters
     global test
     print("Welcome to Hangman!")
-    word_length = int(input("How many letters would you like? : "))
+    word_length = int(input("How many letters would you like? (2-22, or 28): "))
+    while(word_length < 2 or (word_length > 22 and word_length != 28)):
+        word_length = int(input("Please choose between 2 and 22, or 28: "))
     misses = int(input("How many misses would you like? : "))
     test_string = input("Would you like to run in test mode (y/n)? : ")
     secret_word = get_word("noplurals.txt", word_length)
@@ -59,14 +63,15 @@ def intro():
     return secret_word, misses
 
 def play_game(secret_word, misses):
+    #play the game!
     global test
     guess_word = ["_"] * len(secret_word)
     already_guessed = []
     while misses > 0 and "_" in guess_word:
         if test:
             print("The secret word is: '" + secret_word + "'")
-        print("Current guess is:", guess_to_string(guess_word))
-        print("misses left:", misses)
+        print("Current guess is:\n", guess_to_string(guess_word), "\n")
+        print("misses left:", misses, "\n")
         guess_char = new_guess(already_guessed)
         was_found, times_found, guess_word = check_guess(guess_char, guess_word, secret_word)
         if was_found:
@@ -77,16 +82,13 @@ def play_game(secret_word, misses):
             misses -= 1
             already_guessed.append(guess_char)
     if misses == 0:
-        print("You lost :P The word was:", secret_word)
+        print("You lost :P The word was: '" + secret_word + "'")
     else:
         print("Congrats, you won! The word was: '" + secret_word + "'")
-
-
 
 def main():
     secret_word, misses = intro()
     play_game(secret_word, misses)
-
 
 if __name__ == '__main__':
     main()

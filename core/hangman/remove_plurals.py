@@ -3,7 +3,7 @@
 def main():
     #inefficient but fun to watch!
     f = open("words.txt", 'r')
-    words = f.read()
+    words = f.read().strip()
     f.close()
     word_list = [w.strip() for w in words.split('\n')]
     ret = []
